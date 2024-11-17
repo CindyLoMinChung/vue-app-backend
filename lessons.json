@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "subject": "Math",
+    "location": "Room 101",
+    "price": 50,
+    "spaces": 5,
+    "image": "./Images/Maths.jpeg"
+  },
+  {
+    "id": 2,
+    "subject": "Science",
+    "location": "Room 102",
+    "price": 60,
+    "spaces": 5,
+    "image": "./Images/Science.jpeg"
+  },
+  {
+    "id": 3,
+    "subject": "Art",
+    "location": "Room 103",
+    "price": 40,
+    "spaces": 5,
+    "image": "./Images/Art.jpeg"
+  },
+  {
+    "id": 4,
+    "subject": "Geography",
+    "location": "Room 104",
+    "price": 70,
+    "spaces": 5,
+    "image": "./Images/Geography.jpeg"
+  },
+  {
+    "id": 5,
+    "subject": "English",
+    "location": "Room 105",
+    "price": 100,
+    "spaces": 5,
+    "image": "./Images/English.jpeg"
+  },
+  {
+    "id": 6,
+    "subject": "Music",
+    "location": "Room 106",
+    "price": 500,
+    "spaces": 5,
+    "image": "./Images/Music.jpeg"
+  },
+  {
+    "id": 7,
+    "subject": "Economics",
+    "location": "Room 107",
+    "price": 20,
+    "spaces": 5,
+    "image": "./Images/Economics.jpeg"
+  },
+  {
+    "id": 8,
+    "subject": "Account",
+    "location": "Room 108",
+    "price": 68,
+    "spaces": 5,
+    "image": "./Images/Accounts.jpeg"
+  },
+  {
+    "id": 9,
+    "subject": "Physical Education",
+    "location": "Room 109",
+    "price": 100,
+    "spaces": 5,
+    "image": "./Images/PE.jpeg"
+  },
+  {
+    "id": 10,
+    "subject": "Literature",
+    "location": "Room 110",
+    "price": 100,
+    "spaces": 5,
+    "image": "./Images/Literature.jpeg"
+  }
+]
