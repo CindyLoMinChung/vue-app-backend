@@ -28,7 +28,7 @@ app.use("/images", express.static(lessonImagesPath));
 
 // Handle missing files for lesson images
 app.use((req, res, next) => {
-  if (req.path.startsWith("/lesson-images") && !req.path.includes(".")) {
+  if (req.path.startsWith("/images") && !req.path.includes(".")) {
     res.status(404).json({ error: "File not found" });
   } else {
     next();
@@ -53,22 +53,23 @@ console.log(`MongoDB Connection URI: ${uri}`);
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
-  serverApi: ServerApiVersion.v1,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
-let db1; // Declare variable to hold the database instance
+let db;
 
-// Connect to MongoDB
 async function connectDB() {
   try {
     await client.connect();
-    console.log("Connected to MongoDB");
-    db1 = client.db(dbName); // Set the database instance
+    console.log("Connected to MongoDB Atlas in insecure mode");
+    db = client.db("Coursework_fullstack_M00836347"); // Use your database name here
   } catch (err) {
-    console.error("MongoDB connection error:", err);
-    process.exit(1); // Exit the process if the connection fails
+    console.error("MongoDB connection error:", err.message);
+    process.exit(1); // Exit the process on connection failure
   }
 }
+
 connectDB(); // Call the function to establish the database connection
 
 // Middleware to check if a collection exists and set the collection
