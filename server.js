@@ -10,15 +10,36 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware setup
-app.use(cors());
-app.use(express.json());
-app.set("json spaces", 3);
+app.use(cors()); // Enable CORS for all routes
+app.use(express.json()); // Parse incoming JSON payloads
+app.set("json spaces", 3); // Format JSON responses with 3 spaces for better readability
+
+// Logger Middleware: Logs all requests to the console with timestamp
+app.use((req, res, next) => {
+  console.log(
+    `${new Date().toISOString()} - ${req.method} request to ${req.url}`
+  );
+  next();
+});
+
+// Static File Middleware: Serves lesson images or returns a 404 error if the file doesn't exist
+const lessonImagesPath = path.join(__dirname, "images");
+app.use("/images", express.static(lessonImagesPath));
+
+// Handle missing files for lesson images
+app.use((req, res, next) => {
+  if (req.path.startsWith("/lesson-images") && !req.path.includes(".")) {
+    res.status(404).json({ error: "File not found" });
+  } else {
+    next();
+  }
+});
 
 // Load database configuration from properties file
 let propertiesPath = path.resolve(__dirname, "./dbconnection.properties");
 let properties = PropertiesReader(propertiesPath);
 
-// Extract values from the properties file
+// Extract database connection details from the properties file
 const dbPrefix = properties.get("db.prefix");
 const dbHost = properties.get("db.host");
 const dbName = properties.get("db.name");
@@ -26,169 +47,102 @@ const dbUser = properties.get("db.user");
 const dbPassword = properties.get("db.password");
 const dbParams = properties.get("db.params");
 
-// MongoDB connection URL
+// MongoDB connection URI
 const uri = `${dbPrefix}${dbUser}:${dbPassword}${dbHost}${dbParams}`;
+console.log(`MongoDB Connection URI: ${uri}`);
+
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, { serverApi: ServerApiVersion.v1 });
+const client = new MongoClient(uri, {
+  serverApi: ServerApiVersion.v1,
+});
 
-let db1; // Declare variable for the database
+let db1; // Declare variable to hold the database instance
 
-// Connect to MongoDB Atlas
+// Connect to MongoDB
 async function connectDB() {
   try {
     await client.connect();
     console.log("Connected to MongoDB");
-    db1 = client.db(dbName); // Use the database name from properties
+    db1 = client.db(dbName); // Set the database instance
   } catch (err) {
-    // Meaningful error
-    console.error("MongoDB connection error:", err.message);
-    console.error(
-      "Possible solutions:\n" +
-        "1. Ensure your MongoDB URI is correct in dbconnection.properties.\n" +
-        "2. Check your IP whitelist settings in MongoDB Atlas.\n" +
-        "3. Verify that your database user credentials are correct."
-    );
-    process.exit(1); // Exit process if database connection fails
+    console.error("MongoDB connection error:", err);
+    process.exit(1); // Exit the process if the connection fails
   }
 }
+connectDB(); // Call the function to establish the database connection
 
-connectDB(); // Call the connectDB function to connect to MongoDB database
-
-// Middleware to set the collection based on URL parameter
-app.param("collectionName", function (req, res, next, collectionName) {
+// Middleware to check if a collection exists and set the collection
+app.param("collectionName", async function (req, res, next, collectionName) {
   try {
-    req.collection = db1.collection(collectionName); // Use db1
-    console.log("Middleware set collection:", req.collection.collectionName); // For debugging
-    next();
-  } catch (err) {
-    const message = `Error accessing collection "${collectionName}": ${err.message}`;
-    console.error(message);
-    res.status(400).json({ error: message });
-  }
-});
-
-// Route to get all documents in a collection
-app.get("/collections/:collectionName", async function (req, res, next) {
-  try {
-    const results = await req.collection.find({}).toArray();
-    if (results.length === 0) {
+    // Check if the collection exists in the database
+    const collectionExists =
+      (await db1.listCollections({ name: collectionName }).toArray()).length >
+      0;
+    if (!collectionExists) {
       return res
         .status(404)
-        .json({ error: "No documents found in the collection." });
+        .json({ error: `Collection "${collectionName}" does not exist.` });
     }
-    res.json(results);
+    req.collection = db1.collection(collectionName); // Attach the collection to the request object
+    next();
   } catch (err) {
-    const message = `Error fetching documents from collection "${req.params.collectionName}": ${err.message}`;
-    console.error(message);
-    res.status(500).json({ error: message });
+    console.error(`Error checking collection "${collectionName}":`, err);
+    res.status(500).json({ error: "Internal server error." });
   }
 });
 
-// Route to get limited, sorted documents in a collection
-app.get(
-  "/collections/:collectionName/limited",
-  async function (req, res, next) {
-    try {
-      const results = await req.collection
-        .find({})
-        .limit(3)
-        .sort({ price: -1 })
-        .toArray();
-      if (results.length === 0) {
-        return res
-          .status(404)
-          .json({ error: "No documents found in the collection." });
-      }
-      res.json(results);
-    } catch (err) {
-      const message = `Error fetching limited documents from collection "${req.params.collectionName}": ${err.message}`;
-      console.error(message);
-      res.status(500).json({ error: message });
-    }
-  }
-);
-
-// Route to get a single document by ID
-app.get("/collections/:collectionName/:id", async function (req, res, next) {
+// GET route to return all lessons
+app.get("/lessons", async (req, res) => {
   try {
-    const documentId = new ObjectId(req.params.id);
-    const result = await req.collection.findOne({ _id: documentId });
-    if (!result) {
-      return res.status(404).json({
-        error: `Document with ID "${req.params.id}" not found in collection "${req.params.collectionName}".`,
-      });
-    }
-    res.json(result);
+    const lessons = await db1.collection("lessons").find({}).toArray();
+    res.json(lessons);
   } catch (err) {
-    const message = `Error fetching document by ID "${req.params.id}" from collection "${req.params.collectionName}": ${err.message}`;
-    console.error(message);
-    res.status(500).json({ error: message });
+    console.error("Error fetching lessons:", err.message);
+    res.status(500).json({ error: "Failed to fetch lessons." });
   }
 });
 
-// Route to create a new document
-app.post("/collections/:collectionName", async function (req, res, next) {
+// POST route to save a new order in the "orders" collection
+app.post("/orders", async (req, res) => {
   try {
-    const newDocument = req.body;
-    if (!newDocument || Object.keys(newDocument).length === 0) {
-      return res.status(400).json({ error: "Request body cannot be empty." });
+    const order = req.body;
+    // Validate the order payload
+    if (!order.name || !order.phone || !order.lessonIDs || !order.spaces) {
+      return res.status(400).json({ error: "Invalid order format." });
     }
-    const result = await req.collection.insertOne(newDocument);
-    res.json({ message: "Document created successfully.", result });
+    const orderCollection = db1.collection("orders");
+    const result = await orderCollection.insertOne(order);
+    res.json({ message: "Order created successfully.", result });
   } catch (err) {
-    const message = `Error creating document in collection "${req.params.collectionName}": ${err.message}`;
-    console.error(message);
-    res.status(500).json({ error: message });
+    console.error("Error creating order:", err.message);
+    res.status(500).json({ error: "Failed to create order." });
   }
 });
 
-// Route to delete a document by ID
-app.delete("/collections/:collectionName/:id", async function (req, res, next) {
+// PUT route to update any attribute of a lesson in the "lessons" collection
+app.put("/lessons/:id", async (req, res) => {
   try {
-    const documentId = new ObjectId(req.params.id);
-    const result = await req.collection.deleteOne({ _id: documentId });
-    if (result.deletedCount === 0) {
-      return res.status(404).json({
-        error: `Document with ID "${req.params.id}" not found in collection "${req.params.collectionName}".`,
-      });
+    const lessonId = new ObjectId(req.params.id);
+    const updatedLesson = req.body;
+    const result = await db1
+      .collection("lessons")
+      .updateOne({ _id: lessonId }, { $set: updatedLesson });
+    if (result.modifiedCount === 0) {
+      return res
+        .status(404)
+        .json({ error: "Lesson not found or no changes applied." });
     }
-    res.json({ message: "Document deleted successfully.", result });
+    res.json({ message: "Lesson updated successfully.", result });
   } catch (err) {
-    const message = `Error deleting document with ID "${req.params.id}" from collection "${req.params.collectionName}": ${err.message}`;
-    console.error(message);
-    res.status(500).json({ error: message });
+    console.error("Error updating lesson:", err.message);
+    res.status(500).json({ error: "Failed to update lesson." });
   }
 });
 
-// Route to update a document by ID
-app.put("/collections/:collectionName/:id", async function (req, res, next) {
-  try {
-    const documentId = new ObjectId(req.params.id);
-    const updatedDocument = req.body;
-    if (!updatedDocument || Object.keys(updatedDocument).length === 0) {
-      return res.status(400).json({ error: "Request body cannot be empty." });
-    }
-    const result = await req.collection.updateOne(
-      { _id: documentId },
-      { $set: updatedDocument }
-    );
-    if (result.matchedCount === 0) {
-      return res.status(404).json({
-        error: `Document with ID "${req.params.id}" not found in collection "${req.params.collectionName}".`,
-      });
-    }
-    res.json({ message: "Document updated successfully.", result });
-  } catch (err) {
-    const message = `Error updating document with ID "${req.params.id}" in collection "${req.params.collectionName}": ${err.message}`;
-    console.error(message);
-    res.status(500).json({ error: message });
-  }
-});
-
-// Global error handler
+// Error Handling Middleware: Handles all uncaught errors
 app.use((err, req, res, next) => {
   console.error("Global error handler:", err);
-  res.status(500).json({ error: "An unexpected internal error occurred." });
+  res.status(500).json({ error: "An internal error occurred." });
 });
 
 // Start the server
