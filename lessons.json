@@ -37,7 +37,7 @@
     "location": "Room 105",
     "price": 100,
     "spaces": 5,
-    "image": "https://vue-app-backend.onrender.com//images/English.jpeg"
+    "image": "https://vue-app-backend.onrender.com/images/English.jpeg"
   },
   {
     "id": 6,
