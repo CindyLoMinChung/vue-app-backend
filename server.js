@@ -52,6 +52,9 @@ const dbParams = properties.get("db.params");
 const uri = `${dbPrefix}${dbUser}:${dbPassword}${dbHost}${dbParams}`;
 console.log(`MongoDB Connection URI: ${uri}`);
 
+console.log("Database:", db.name);
+console.log("Collections:", await db.listCollections().toArray());
+
 // Create a MongoClient
 const client = new MongoClient(uri, {
   serverApi: ServerApiVersion.v1,
