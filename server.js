@@ -126,7 +126,9 @@ app.get("/test-images", (req, res) => {
   fs.readdir(imagePath, (err, files) => {
     if (err) {
       console.error("Error reading Images directory:", err.message);
-      return res.status(500).json({ error: "Images folder not found" });
+      return res
+        .status(500)
+        .json({ error: "Images folder not found or inaccessible" });
     }
     res.json({ images: files });
   });
