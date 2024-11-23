@@ -34,13 +34,13 @@ app.use((req, res, next) => {
   }
 });
 
-// MongoDB connection details from environment variables
-const dbPrefix = process.env.DB_PREFIX;
-const dbHost = process.env.DB_HOST;
-const dbName = process.env.DB_NAME;
-const dbUser = process.env.DB_USER;
-const dbPassword = process.env.DB_PASSWORD;
-const dbParams = process.env.DB_PARAMS;
+// Extract values from the properties file
+const dbPrefix = properties.get("db.prefix");
+const dbHost = properties.get("db.host");
+const dbName = properties.get("db.name");
+const dbUser = properties.get("db.user");
+const dbPassword = properties.get("db.password");
+const dbParams = properties.get("db.params");
 
 // MongoDB Connection URI
 const uri = `${dbPrefix}${dbUser}:${dbPassword}@${dbHost}${dbParams}`;
