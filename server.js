@@ -52,11 +52,6 @@ const dbParams = properties.get("db.params");
 const uri = `${dbPrefix}${dbUser}:${dbPassword}${dbHost}${dbParams}`;
 console.log(`MongoDB Connection URI: ${uri}`);
 
-console.log("Database:", db.name);
-(async () => {
-  console.log("Collections:", await db.listCollections().toArray());
-})();
-
 // Create a MongoClient
 const client = new MongoClient(uri, {
   serverApi: ServerApiVersion.v1,
@@ -64,7 +59,37 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
 });
 
+// Declare `db` variable
 let db;
+
+// Function to connect to MongoDB
+async function connectDB() {
+  try {
+    await client.connect(); // Connect to MongoDB
+    console.log("Connected to MongoDB Atlas");
+    db = client.db("YourDatabaseName"); // Initialize `db` with your database name
+  } catch (err) {
+    console.error("MongoDB connection error:", err.message);
+    process.exit(1); // Exit process on failure
+  }
+}
+
+// Ensure database connection is established before using `db`
+connectDB().then(async () => {
+  // Safe to access `db` now
+  console.log("Collections:", await db.listCollections().toArray());
+});
+
+// Example: Using `db` safely in an async function
+app.get("/example", async (req, res) => {
+  try {
+    const collections = await db.listCollections().toArray();
+    res.json({ collections });
+  } catch (err) {
+    console.error("Error fetching collections:", err.message);
+    res.status(500).json({ error: "Failed to fetch collections." });
+  }
+});
 
 // Function to connect to MongoDB
 async function connectDB() {
