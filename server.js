@@ -1,12 +1,10 @@
 // Import dependencies
 const express = require("express");
 const cors = require("cors");
+const fs = require("fs");
 const path = require("path");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const PropertiesReader = require("properties-reader");
-
-const fs = require("fs");
-const path = require("path");
 
 // Initialize the app
 const app = express();
