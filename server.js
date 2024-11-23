@@ -120,8 +120,6 @@ app.post("/orders", async (req, res) => {
 });
 
 // PUT route to update lessons
-const ObjectId = require("mongodb").ObjectId;
-
 app.put("/lessons/:id", async (req, res) => {
   try {
     const lessonId = new ObjectId(req.params.id); // Convert to ObjectId
