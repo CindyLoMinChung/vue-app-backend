@@ -4,6 +4,8 @@ const cors = require("cors");
 const path = require("path");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
+let PropertiesReader = require("properties-reader");
+
 // Initialize the app
 const app = express();
 const PORT = process.env.PORT || 3000;
