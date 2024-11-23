@@ -13,6 +13,10 @@ app.use(cors());
 app.use(express.json());
 app.set("json spaces", 3); // JSON response formatting for debugging
 
+// Load properties from the file
+let propertiesPath = path.resolve(__dirname, "./dbconnection.properties");
+let properties = PropertiesReader(propertiesPath);
+
 // Logger Middleware: Logs all requests
 app.use((req, res, next) => {
   console.log(
