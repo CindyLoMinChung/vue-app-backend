@@ -120,19 +120,24 @@ app.post("/orders", async (req, res) => {
 });
 
 // PUT route to update lessons
+const ObjectId = require("mongodb").ObjectId;
+
 app.put("/lessons/:id", async (req, res) => {
   try {
-    const lessonId = new ObjectId(req.params.id);
+    const lessonId = new ObjectId(req.params.id); // Convert to ObjectId
     const updatedLesson = req.body;
+
     const result = await db
       .collection("lessons")
       .updateOne({ _id: lessonId }, { $set: updatedLesson });
+
     if (result.modifiedCount === 0) {
       return res
         .status(404)
         .json({ error: "Lesson not found or no changes applied." });
     }
-    res.json({ message: "Lesson updated successfully.", result });
+
+    res.json({ message: "Lesson updated successfully." });
   } catch (err) {
     console.error("Error updating lesson:", err.message);
     res.status(500).json({ error: "Failed to update lesson." });
