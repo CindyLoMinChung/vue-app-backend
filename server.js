@@ -120,6 +120,18 @@ app.get("/lessons", async (req, res) => {
   }
 });
 
+app.get("/test-images", (req, res) => {
+  const fs = require("fs");
+  const imagePath = path.join(__dirname, "Images");
+  fs.readdir(imagePath, (err, files) => {
+    if (err) {
+      console.error("Error reading Images directory:", err.message);
+      return res.status(500).json({ error: "Images folder not found" });
+    }
+    res.json({ images: files });
+  });
+});
+
 // POST route to save a new order
 app.post("/orders", async (req, res) => {
   try {
