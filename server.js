@@ -3,8 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-
-let PropertiesReader = require("properties-reader");
+const PropertiesReader = require("properties-reader");
 
 // Initialize the app
 const app = express();
@@ -25,19 +24,6 @@ app.use((req, res, next) => {
     `${new Date().toISOString()} - ${req.method} request to ${req.url}`
   );
   next();
-});
-
-// Static File Middleware for lesson images
-const lessonImagesPath = path.join(__dirname, "images");
-app.use("/images", express.static(lessonImagesPath));
-
-// Handle missing files
-app.use((req, res, next) => {
-  if (req.path.startsWith("/images") && !req.path.includes(".")) {
-    res.status(404).json({ error: "File not found" });
-  } else {
-    next();
-  }
 });
 
 // Extract values from the properties file
@@ -62,48 +48,41 @@ const client = new MongoClient(uri, {
 // Declare `db` variable
 let db;
 
-// Function to connect to MongoDB
-async function connectDB() {
-  try {
-    await client.connect(); // Connect to MongoDB
-    console.log("Connected to MongoDB Atlas");
-    db = client.db("YourDatabaseName"); // Initialize `db` with your database name
-  } catch (err) {
-    console.error("MongoDB connection error:", err.message);
-    process.exit(1); // Exit process on failure
-  }
-}
-
-// Ensure database connection is established before using `db`
-connectDB().then(async () => {
-  // Safe to access `db` now
-  console.log("Collections:", await db.listCollections().toArray());
-});
-
-// Example: Using `db` safely in an async function
-app.get("/example", async (req, res) => {
-  try {
-    const collections = await db.listCollections().toArray();
-    res.json({ collections });
-  } catch (err) {
-    console.error("Error fetching collections:", err.message);
-    res.status(500).json({ error: "Failed to fetch collections." });
-  }
-});
-
-// Function to connect to MongoDB
+// Consolidated Function to Connect to MongoDB
 async function connectDB() {
   try {
     await client.connect();
     console.log("Connected to MongoDB Atlas");
-    db = client.db(dbName);
+    db = client.db(dbName); // Initialize `db` with your database name
   } catch (err) {
     console.error("MongoDB connection error:", err.message);
     process.exit(1); // Exit process on failure
   }
 }
 
-connectDB(); // Establish MongoDB connection
+// Ensure database connection is established
+connectDB().then(async () => {
+  console.log("Collections:", await db.listCollections().toArray());
+  updateLessonImages(); // Only call once the connection is established
+});
+
+// Function to update lesson images
+async function updateLessonImages() {
+  try {
+    const lessonsCollection = db.collection("lessons");
+    const lessons = await lessonsCollection.find({}).toArray();
+    for (let lesson of lessons) {
+      const updatedImage = `https://your-backend-service.onrender.com/images/${lesson.subject}.jpeg`;
+      await lessonsCollection.updateOne(
+        { _id: lesson._id },
+        { $set: { image: updatedImage } }
+      );
+    }
+    console.log("Lesson images updated successfully!");
+  } catch (error) {
+    console.error("Error updating images:", error);
+  }
+}
 
 // Middleware for handling collections dynamically
 app.param("collectionName", async function (req, res, next, collectionName) {
@@ -137,28 +116,19 @@ app.get("/lessons", async (req, res) => {
 // POST route to save a new order
 app.post("/orders", async (req, res) => {
   try {
-    // Log the incoming order request body
     console.log("Incoming order request:", req.body);
-
     const order = req.body;
 
-    // Validate required fields
     if (!order.name || !order.phone || !order.lessonIDs || !order.spaces) {
       console.error("Invalid order format. Received:", order);
       return res.status(400).json({ error: "Invalid order format." });
     }
 
-    // Insert the order into the 'orders' collection
     const result = await db.collection("orders").insertOne(order);
-
-    // Log the result of the insertion
     console.log("Order inserted successfully:", result);
-
     res.json({ message: "Order created successfully.", result });
   } catch (err) {
-    // Log the error if any
     console.error("Error creating order:", err.message);
-
     res.status(500).json({ error: "Failed to create order." });
   }
 });
