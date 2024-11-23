@@ -137,11 +137,18 @@ app.get("/lessons", async (req, res) => {
 // POST route to save a new order
 app.post("/orders", async (req, res) => {
   try {
+    console.log("Request Body:", req.body); // Log the incoming body
+
     const order = req.body;
+
+    // Validate the order payload
     if (!order.name || !order.phone || !order.lessonIDs || !order.spaces) {
       return res.status(400).json({ error: "Invalid order format." });
     }
+
     const result = await db.collection("orders").insertOne(order);
+    console.log("Order successfully saved:", result);
+
     res.json({ message: "Order created successfully.", result });
   } catch (err) {
     console.error("Error creating order:", err.message);
