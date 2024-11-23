@@ -66,6 +66,13 @@ connectDB().then(async () => {
   updateLessonImages(); // Only call once the connection is established
 });
 
+// Serve the "Images" folder
+app.use("/images", express.static(path.join(__dirname, "Images")));
+
+app.get("/test-images", (req, res) => {
+  res.json({ message: "Static file serving configured" });
+});
+
 // Function to update lesson images
 async function updateLessonImages() {
   try {
