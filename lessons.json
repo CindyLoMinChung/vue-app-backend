@@ -5,7 +5,7 @@
     "location": "Room 101",
     "price": 50,
     "spaces": 5,
-    "image": "https://your-backend-service.onrender.com/images/Maths.jpeg"
+    "image": "https://vue-app-backend.onrender.com/images/Maths.jpeg"
   },
   {
     "id": 2,
@@ -13,7 +13,7 @@
     "location": "Room 102",
     "price": 60,
     "spaces": 5,
-    "image": "https://your-backend-service.onrender.com/images/Science.jpeg"
+    "image": "https://vue-app-backend.onrender.com/images/Science.jpeg"
   },
   {
     "id": 3,
@@ -21,7 +21,7 @@
     "location": "Room 103",
     "price": 40,
     "spaces": 5,
-    "image": "https://your-backend-service.onrender.com/images/Art.jpeg"
+    "image": "https://vue-app-backend.onrender.com/images/Art.jpeg"
   },
   {
     "id": 4,
@@ -29,7 +29,7 @@
     "location": "Room 104",
     "price": 70,
     "spaces": 5,
-    "image": "https://your-backend-service.onrender.com/images/Geography.jpeg"
+    "image": "https://vue-app-backend.onrender.com/images/Geography.jpeg"
   },
   {
     "id": 5,
@@ -37,7 +37,7 @@
     "location": "Room 105",
     "price": 100,
     "spaces": 5,
-    "image": "https://your-backend-service.onrender.com/images/English.jpeg"
+    "image": "https://vue-app-backend.onrender.com//images/English.jpeg"
   },
   {
     "id": 6,
@@ -45,7 +45,7 @@
     "location": "Room 106",
     "price": 500,
     "spaces": 5,
-    "image": "https://your-backend-service.onrender.com/images/Music.jpeg"
+    "image": "https://vue-app-backend.onrender.com/images/Music.jpeg"
   },
   {
     "id": 7,
@@ -53,7 +53,7 @@
     "location": "Room 107",
     "price": 20,
     "spaces": 5,
-    "image": "https://your-backend-service.onrender.com/images/Economics.jpeg"
+    "image": "https://vue-app-backend.onrender.com/images/Economics.jpeg"
   },
   {
     "id": 8,
@@ -61,7 +61,7 @@
     "location": "Room 108",
     "price": 68,
     "spaces": 5,
-    "image": "https://your-backend-service.onrender.com/images/Accounts.jpeg"
+    "image": "https://vue-app-backend.onrender.com/images/Accounts.jpeg"
   },
   {
     "id": 9,
@@ -69,7 +69,7 @@
     "location": "Room 109",
     "price": 100,
     "spaces": 5,
-    "image": "https://your-backend-service.onrender.com/images/PE.jpeg"
+    "image": "https://vue-app-backend.onrender.com/images/PE.jpeg"
   },
   {
     "id": 10,
@@ -77,6 +77,6 @@
     "location": "Room 110",
     "price": 100,
     "spaces": 5,
-    "image": "https://your-backend-service.onrender.com/images/Literature.jpeg"
+    "image": "https://vue-app-backend.onrender.com/images/Literature.jpeg"
   }
 ]

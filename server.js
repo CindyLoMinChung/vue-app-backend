@@ -80,7 +80,7 @@ async function updateLessonImages() {
     const lessonsCollection = db.collection("lessons");
     const lessons = await lessonsCollection.find({}).toArray();
     for (let lesson of lessons) {
-      const updatedImage = `https://your-backend-service.onrender.com/images/${lesson.subject}.jpeg`;
+      const updatedImage = `https://vue-app-backend.onrender.com//images/${lesson.subject}.jpeg`;
       await lessonsCollection.updateOne(
         { _id: lesson._id },
         { $set: { image: updatedImage } }
