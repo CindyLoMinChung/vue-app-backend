@@ -49,7 +49,7 @@ const dbPassword = properties.get("db.password");
 const dbParams = properties.get("db.params");
 
 // MongoDB Connection URI
-const uri = `${dbPrefix}${dbUser}:${dbPassword}@${dbHost}${dbParams}`;
+const uri = `${dbPrefix}${dbUser}:${dbPassword}${dbHost}${dbParams}`;
 console.log(`MongoDB Connection URI: ${uri}`);
 
 // Create a MongoClient
