@@ -149,15 +149,13 @@ app.post("/order", async (req, res) => {
     const order = { name, phone, address, lessons, date: new Date() };
     const result = await db.collection("orders").insertOne(order);
 
-    res
-      .status(201)
-      .json({
-        message: "Order placed successfully.",
-        orderId: result.insertedId,
-      });
+    res.status(201).json({
+      message: "Order placed successfully.",
+      orderId: result.insertedId, // Send order ID for client reference
+    });
   } catch (error) {
     console.error("Error saving order:", error);
-    res.status(500).json({ error: "Failed to save the order." });
+    res.status(500).json({ error: "Failed to save the order." }); // Inform client of the failure
   }
 });
 
