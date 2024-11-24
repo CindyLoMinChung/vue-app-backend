@@ -159,26 +159,32 @@ app.post("/order", async (req, res) => {
   }
 });
 
-// PUT route to update lessons
-app.put("/lessons/:id", async (req, res) => {
+// Update an order by ID
+app.put("/order/:id", async (req, res) => {
   try {
-    const lessonId = new ObjectId(req.params.id); // Convert to ObjectId
-    const updatedLesson = req.body;
+    const { id } = req.params; // Extract the order ID from the URL
+    const { name, phone, address, lessons } = req.body; // Get updated fields from the request body
 
-    const result = await db
-      .collection("lessons")
-      .updateOne({ _id: lessonId }, { $set: updatedLesson });
-
-    if (result.modifiedCount === 0) {
+    // Validate input
+    if (!name || !phone || !address || !lessons || !Array.isArray(lessons)) {
       return res
-        .status(404)
-        .json({ error: "Lesson not found or no changes applied." });
+        .status(400)
+        .json({ error: "Invalid order data. Ensure all fields are provided." });
     }
 
-    res.json({ message: "Lesson updated successfully." });
-  } catch (err) {
-    console.error("Error updating lesson:", err.message);
-    res.status(500).json({ error: "Failed to update lesson." });
+    const result = await db.collection("orders").updateOne(
+      { _id: new ObjectId(id) }, // Match the order by its ID
+      { $set: { name, phone, address, lessons, date: new Date() } } // Update fields
+    );
+
+    if (result.matchedCount === 0) {
+      res.status(404).json({ error: "Order not found." });
+    } else {
+      res.status(200).json({ message: "Order updated successfully." });
+    }
+  } catch (error) {
+    console.error("Error updating order:", error);
+    res.status(500).json({ error: "Failed to update the order." });
   }
 });
 
