@@ -136,22 +136,28 @@ app.get("/test-images", (req, res) => {
 });
 
 // POST route to save a new order
-app.post("/orders", async (req, res) => {
+app.post("/order", async (req, res) => {
+  const { name, phone, address, lessons } = req.body;
+
+  // Validate the request body
+  if (!name || !phone || !address || !Array.isArray(lessons)) {
+    return res.status(400).json({ error: "Invalid order format." });
+  }
+
   try {
-    console.log("Incoming order request:", req.body);
-    const order = req.body;
-
-    if (!order.name || !order.phone || !order.lessonIDs || !order.spaces) {
-      console.error("Invalid order format. Received:", order);
-      return res.status(400).json({ error: "Invalid order format." });
-    }
-
+    // Save the order to the "orders" collection
+    const order = { name, phone, address, lessons, date: new Date() };
     const result = await db.collection("orders").insertOne(order);
-    console.log("Order inserted successfully:", result);
-    res.json({ message: "Order created successfully.", result });
-  } catch (err) {
-    console.error("Error creating order:", err.message);
-    res.status(500).json({ error: "Failed to create order." });
+
+    res
+      .status(201)
+      .json({
+        message: "Order placed successfully.",
+        orderId: result.insertedId,
+      });
+  } catch (error) {
+    console.error("Error saving order:", error);
+    res.status(500).json({ error: "Failed to save the order." });
   }
 });
 
