@@ -1,0 +1,69 @@
+{
+	"info": {
+		"_postman_id": "77f1552a-a882-403c-a837-8c107a3d1361",
+		"name": "Fullstack postman",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33054984"
+	},
+	"item": [
+		{
+			"name": "https://vue-app-backend.onrender.com/order/6743819866448e005a145bc3",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"John Smith\",\r\n  \"phone\": \"9876543210\",\r\n  \"address\": \"Updated Address\",\r\n  \"lessons\": [\"lesson1\", \"lesson2\"]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vue-app-backend.onrender.com/order/6743819866448e005a145bc3",
+					"protocol": "https",
+					"host": [
+						"vue-app-backend",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"order",
+						"6743819866448e005a145bc3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://vue-app-backend.onrender.com/orders",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"_id\": \"67437b031bfb631330ab006c\",\r\n  \"name\": \"cindy\",\r\n  \"phone\": \"123454321112\",\r\n  \"address\": \"Hendon\",\r\n  \"lessons\": [1],\r\n  \"date\": \"2024-11-24T19:14:11.558+00:00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vue-app-backend.onrender.com/orders",
+					"protocol": "https",
+					"host": [
+						"vue-app-backend",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
