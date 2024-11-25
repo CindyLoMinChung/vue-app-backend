@@ -1,0 +1,59 @@
+[{
+  "_id": {
+    "$oid": "67437b031bfb631330ab006c"
+  },
+  "name": "cindy",
+  "phone": "123454321112",
+  "address": "Hendon",
+  "lessons": [
+    7
+  ],
+  "date": {
+    "$date": "2024-11-24T19:14:11.558Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67437b3e1bfb631330ab006d"
+  },
+  "name": "Lilu",
+  "phone": "82651732198374",
+  "address": "Cambridge",
+  "lessons": [
+    8,
+    3,
+    4
+  ],
+  "date": {
+    "$date": "2024-11-24T19:15:10.988Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6743819866448e005a145bc3"
+  },
+  "name": "John Smith",
+  "phone": "9876543210",
+  "address": "Updated Address",
+  "lessons": [
+    "lesson1",
+    "lesson2"
+  ],
+  "date": {
+    "$date": "2024-11-24T20:17:19.616Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "674382d066448e005a145bc4"
+  },
+  "name": "cindy",
+  "phone": "123454321112",
+  "address": "Hendon",
+  "lessons": [
+    1
+  ],
+  "date": {
+    "$date": "2024-11-24T19:47:28.001Z"
+  }
+}]
