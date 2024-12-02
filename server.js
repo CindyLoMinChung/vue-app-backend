@@ -1,9 +1,9 @@
-// Import dependencies
+// Declaration of dependencies
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb"); // Declare mongodb
 const PropertiesReader = require("properties-reader");
 
 // Initialize the app
@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 // Middleware setup
 app.use(cors());
 app.use(express.json());
-app.set("json spaces", 3); // JSON response formatting for debugging
+app.set("json spaces", 3); // To pretify JSON format during debug
 
 // Load properties from the file
 let propertiesPath = path.resolve(__dirname, "./dbconnection.properties");
